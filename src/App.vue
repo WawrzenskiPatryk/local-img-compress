@@ -1,7 +1,11 @@
 <template>
   <main class="compressor">
     <div class="compressor__buttons">
-      <button class="compressor__upload-button" @click="onUploadButtonClick">
+      <button
+        v-show="uploadedAmount === 0"
+        class="compressor__upload-button"
+        @click="onUploadButtonClick"
+      >
         Upload
         <input
           multiple
@@ -13,12 +17,14 @@
         />
       </button>
       <button
+        v-if="!isReadyToDownload && uploadedAmount !== 0"
         class="compressor__upload-button compressor__upload-button--compress"
         @click="compressFiles"
       >
         Compress
       </button>
       <button
+        v-else-if="isReadyToDownload"
         class="compressor__upload-button compressor__upload-button--download"
         @click="downloadFiles"
       >
@@ -46,7 +52,7 @@
     <div>
       <h1>Uploaded files: {{ uploadedAmount }}</h1>
       <h1>Compressed files: {{ compressedAmount }}</h1>
-      <h1>READY TO DOWNLOAD: {{ isReadyToDownload ? "✅" : "❌" }}</h1>
+      <h1>Status: {{ compressionStatus }}</h1>
     </div>
   </main>
 </template>
@@ -65,6 +71,18 @@ const isCompressionLoading = ref(false);
 const isReadyToDownload = computed(() => {
   const difference = uploadedAmount.value - compressedAmount.value;
   return !difference && !!uploadedAmount.value;
+});
+
+const compressionStatus = computed(() => {
+  if (isCompressionLoading.value) {
+    return "compressing...";
+  } else if (isReadyToDownload.value) {
+    return "ready to download";
+  } else if (uploadedAmount.value === 0) {
+    return "waiting for upload";
+  } else {
+    return "ready to compress";
+  }
 });
 
 function onUploadButtonClick() {
@@ -88,8 +106,8 @@ async function compressFiles() {
         minifiedImages.value.push(file);
         compressedAmount.value++;
         if (compressedAmount.value === uploadedAmount.value) {
-          console.log("FINISHED");
           images.value = null;
+          isCompressionLoading.value = false;
         }
       },
       error(e) {
@@ -97,7 +115,6 @@ async function compressFiles() {
       },
     });
   });
-  isCompressionLoading.value = false;
 }
 
 function downloadFiles() {
@@ -145,7 +162,7 @@ function clearFiles() {
       background-color: rgb(219, 231, 241);
     }
 
-    &--compress {
+    &--download {
       border: 5px solid rgb(41, 168, 71);
       background-color: rgb(235, 246, 236);
 
@@ -154,7 +171,7 @@ function clearFiles() {
       }
     }
 
-    &--download {
+    &--compress {
       border: 5px solid rgb(168, 155, 41);
       background-color: rgb(246, 245, 235);
 
