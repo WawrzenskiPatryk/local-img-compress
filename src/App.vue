@@ -45,10 +45,31 @@
       %
     </div>
     <div>
-      <h2>{{ counterMessage }}</h2>
-      <h2>Status: {{ compressionStatus }}</h2>
+      <h3>{{ counterMessage }}</h3>
+      <h3>Status: {{ compressionStatus }}</h3>
     </div>
   </main>
+  <section class="file-list">
+    <div class="file-list__wrapper">
+      <div v-if="!isReadyToDownload && !isCompressionLoading">File list is empty.</div>
+      <div
+        v-for="file in minifiedImages"
+        :key="file.lastModified"
+        class="file-list__table-row"
+      >
+        <div class="file-list__table-cell">{{ file.name }}</div>
+        <div class="file-list__table-cell">size: {{ parseInt(file.size / 1024) }} kB</div>
+        <div class="file-list__table-cell">
+          original size: {{ parseInt(file.originalSize / 1024) }} kB
+        </div>
+        <div class="file-list__table-cell">
+          smaller around {{ parseInt(file.originalSize / file.size) }} time{{
+            parseInt(file.originalSize / file.size) === 1 ? '' : 's'
+          }}
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
@@ -62,12 +83,11 @@ const {
   compressionRate,
   counterMessage,
   compressionStatus,
+  minifiedImages,
   compressFiles,
   downloadFiles,
   clearFiles,
 } = useFileCompressor(uploadInput);
-
-compressionRate.value = 60;
 </script>
 
 <style lang="scss" scoped>
@@ -79,8 +99,8 @@ compressionRate.value = 60;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 50px;
-  height: 100vh;
+  gap: 20px;
+  margin: 40px 0 20px 0;
 
   &__buttons {
     display: flex;
@@ -88,10 +108,10 @@ compressionRate.value = 60;
   }
 
   &__upload-button {
-    font-size: 25px;
-    padding: 15px;
-    height: 170px;
-    width: 170px;
+    font-size: 20px;
+    padding: 12px;
+    height: 150px;
+    width: 150px;
     border-radius: 100%;
     cursor: pointer;
     font-weight: bold;
@@ -137,11 +157,34 @@ compressionRate.value = 60;
   }
 
   &__rate {
-    font-size: 30px;
+    font-size: 20px;
+    margin-top: 5px;
   }
 
   &__upload-input {
     display: none;
+  }
+}
+
+.file-list {
+  border: 1px solid black;
+  margin: 0 10vw;
+  min-height: 100px;
+  max-height: 400px;
+  overflow: scroll;
+
+  &__wrapper {
+    padding: 20px 50px;
+  }
+
+  &__table-row {
+    display: grid;
+    margin-bottom: 10px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &__table-cell {
+    margin: 0 auto;
   }
 }
 </style>

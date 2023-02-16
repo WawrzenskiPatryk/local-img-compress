@@ -8,7 +8,7 @@ export function useFileCompressor(uploadInput) {
     empty: 'waiting for upload',
   };
 
-  const compressionRate = ref(60);
+  const compressionRate = ref(100);
   const uploadedAmount = ref(0);
   const compressedAmount = ref(0);
   const minifiedImages = ref([]);
@@ -46,9 +46,10 @@ export function useFileCompressor(uploadInput) {
         quality: compressionRate.value / 100,
         success(result) {
           const fileName = `min-${result.name}`;
-          const file = new File([result], fileName);
+          const miniFile = new File([result], fileName);
 
-          minifiedImages.value.push(file);
+          miniFile.originalSize = file.size;
+          minifiedImages.value.push(miniFile);
           compressedAmount.value++;
 
           if (compressedAmount.value === uploadedAmount.value) {
@@ -81,6 +82,7 @@ export function useFileCompressor(uploadInput) {
     compressionRate,
     counterMessage,
     compressionStatus,
+    minifiedImages,
     compressFiles,
     downloadFiles,
     clearFiles,
