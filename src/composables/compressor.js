@@ -1,7 +1,9 @@
 import { ref, computed } from 'vue';
 import Compressor from 'compressorjs';
+import { downloadZip } from 'client-zip/index.js';
+import FileSaver from 'file-saver';
 
-export function useFileCompressor(uploadInput) {
+export function useFileCompressor(fileInput) {
   const appStatuses = {
     compressing: 'compressing...',
     ready: 'ready to download',
@@ -13,6 +15,7 @@ export function useFileCompressor(uploadInput) {
   const compressedAmount = ref(0);
   const minifiedImages = ref([]);
   const isCompressionLoading = ref(false);
+  const isDownloadZipLoading = ref(false);
 
   const isReadyToDownload = computed(() => {
     const difference = uploadedAmount.value - compressedAmount.value;
@@ -38,9 +41,9 @@ export function useFileCompressor(uploadInput) {
   });
 
   function compressFiles() {
-    uploadedAmount.value = uploadInput.value.files.length;
+    uploadedAmount.value = fileInput.value.files.length;
     isCompressionLoading.value = true;
-    const images = Array.from(uploadInput.value.files);
+    const images = Array.from(fileInput.value.files);
     images.forEach(file => {
       new Compressor(file, {
         quality: compressionRate.value / 100,
@@ -63,28 +66,24 @@ export function useFileCompressor(uploadInput) {
     });
   }
 
-  function downloadFiles() {
+  async function downloadFiles() {
     if (isCompressionLoading.value || !uploadedAmount.value) return;
-    // todo: zipping files
-    minifiedImages.value.forEach(image => {
-      const elem = window.document.createElement('a');
-      elem.href = window.URL.createObjectURL(image);
-      elem.download = image.name;
-      document.body.appendChild(elem);
-      elem.click();
-      document.body.removeChild(elem);
-    });
+    isDownloadZipLoading.value = true;
+    const content = await downloadZip(minifiedImages.value).blob();
+    FileSaver.saveAs(content, 'min-download.zip');
+    isDownloadZipLoading.value = false;
   }
 
   function clearFiles() {
     minifiedImages.value = [];
     uploadedAmount.value = 0;
     compressedAmount.value = 0;
-    uploadInput.value.value = '';
+    fileInput.value.value = '';
   }
 
   return {
     isCompressionLoading,
+    isDownloadZipLoading,
     isReadyToDownload,
     compressionRate,
     counterMessage,

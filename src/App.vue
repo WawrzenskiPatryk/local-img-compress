@@ -18,14 +18,14 @@
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--download"
-        :disabled="!isReadyToDownload"
+        :disabled="!isReadyToDownload || isDownloadZipLoading"
         @click="downloadFiles"
       >
         Download
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--clear"
-        :disabled="!isReadyToDownload"
+        :disabled="!isReadyToDownload || isDownloadZipLoading"
         @click="clearFiles"
       >
         Clear memory
@@ -79,6 +79,7 @@ import { useFileCompressor } from './composables/compressor';
 const uploadInput = ref();
 const {
   isCompressionLoading,
+  isDownloadZipLoading,
   isReadyToDownload,
   compressionRate,
   counterMessage,
