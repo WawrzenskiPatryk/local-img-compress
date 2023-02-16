@@ -3,14 +3,15 @@ import Compressor from 'compressorjs';
 import { downloadZip } from 'client-zip/index.js';
 import FileSaver from 'file-saver';
 
-export function useFileCompressor(fileInput) {
-  const appStatuses = {
-    compressing: 'compressing...',
-    ready: 'ready to download',
-    empty: 'waiting for upload',
-  };
+Compressor.setDefaults({ quality: 0.6 });
 
-  const compressionRate = ref(100);
+const appStatuses = {
+  compressing: 'compressing...',
+  ready: 'ready to download',
+  empty: 'waiting for upload',
+};
+
+export function useFileCompressor(fileInput) {
   const uploadedAmount = ref(0);
   const compressedAmount = ref(0);
   const minifiedImages = ref([]);
@@ -43,16 +44,23 @@ export function useFileCompressor(fileInput) {
   function compressFiles() {
     uploadedAmount.value = fileInput.value.files.length;
     isCompressionLoading.value = true;
+
     const images = Array.from(fileInput.value.files);
+
     images.forEach(file => {
       new Compressor(file, {
-        quality: compressionRate.value / 100,
         success(result) {
           const fileName = result.name;
           const miniFile = new File([result], fileName);
 
-          miniFile.originalSize = file.size;
-          minifiedImages.value.push(miniFile);
+          if (file.size < 400000) {
+            file.originalSize = file.size;
+            minifiedImages.value.push(file);
+          } else {
+            miniFile.originalSize = file.size;
+            minifiedImages.value.push(miniFile);
+          }
+
           compressedAmount.value++;
 
           if (compressedAmount.value === uploadedAmount.value) {
@@ -85,7 +93,6 @@ export function useFileCompressor(fileInput) {
     isCompressionLoading,
     isDownloadZipLoading,
     isReadyToDownload,
-    compressionRate,
     counterMessage,
     compressionStatus,
     minifiedImages,

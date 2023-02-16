@@ -31,19 +31,6 @@
         Clear memory
       </button>
     </div>
-    <div class="compressor__rate">
-      Compression rate:
-      <input
-        name="rate"
-        v-model="compressionRate"
-        type="number"
-        max="100"
-        min="0"
-        :disabled="isReadyToDownload || isCompressionLoading"
-        class="compressor__rate"
-      />
-      %
-    </div>
     <div>
       <h3>{{ counterMessage }}</h3>
       <h3>Status: {{ compressionStatus }}</h3>
@@ -81,7 +68,6 @@ const {
   isCompressionLoading,
   isDownloadZipLoading,
   isReadyToDownload,
-  compressionRate,
   counterMessage,
   compressionStatus,
   minifiedImages,
