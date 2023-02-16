@@ -3,6 +3,7 @@
     <div class="compressor__buttons">
       <button
         class="compressor__upload-button"
+        :disabled="uploadedAmount"
         @click="onUploadButtonClick"
       >
         Upload
@@ -17,12 +18,14 @@
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--download"
+        :disabled="!uploadedAmount || uploadedAmount !== compressedAmount"
         @click="downloadFiles"
       >
         Download
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--clear"
+        :disabled="!uploadedAmount || uploadedAmount !== compressedAmount"
         @click="clearFiles"
       >
         Clear memory
@@ -117,6 +120,7 @@ async function compressFiles() {
 
 function downloadFiles() {
   if (isCompressionLoading.value || !uploadedAmount.value) return;
+
   console.log(minifiedImages.value);
 }
 
@@ -124,7 +128,7 @@ function clearFiles() {
   minifiedImages.value = [];
   uploadedAmount.value = 0;
   compressedAmount.value = 0;
-  console.log('CLEARED');
+  uploadInput.value.value = '';
 }
 </script>
 
@@ -157,15 +161,20 @@ function clearFiles() {
     border: 5px solid rgb(41, 98, 168);
     background-color: rgb(235, 241, 246);
 
-    &:hover {
+    &:hover:not([disabled]) {
       background-color: rgb(219, 231, 241);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
     }
 
     &--download {
       border: 5px solid rgb(41, 168, 71);
       background-color: rgb(235, 246, 236);
 
-      &:hover {
+      &:hover:not([disabled]) {
         background-color: rgb(220, 241, 219);
       }
     }
@@ -174,7 +183,7 @@ function clearFiles() {
       border: 5px solid rgb(168, 155, 41);
       background-color: rgb(246, 245, 235);
 
-      &:hover {
+      &:hover:not([disabled]) {
         background-color: rgb(239, 241, 219);
       }
     }
@@ -183,7 +192,7 @@ function clearFiles() {
       border: 5px solid rgb(168, 41, 41);
       background-color: rgb(246, 235, 235);
 
-      &:hover {
+      &:hover:not([disabled]) {
         background-color: rgb(241, 219, 219);
       }
     }
