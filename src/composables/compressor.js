@@ -48,7 +48,7 @@ export function useFileCompressor(fileInput) {
       new Compressor(file, {
         quality: compressionRate.value / 100,
         success(result) {
-          const fileName = `min-${result.name}`;
+          const fileName = result.name;
           const miniFile = new File([result], fileName);
 
           miniFile.originalSize = file.size;
