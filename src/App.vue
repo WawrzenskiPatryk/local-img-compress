@@ -3,7 +3,7 @@
     <div class="compressor__buttons">
       <button
         class="compressor__upload-button"
-        :disabled="uploadedAmount"
+        :disabled="isReadyToDownload || isCompressionLoading"
         @click="onUploadButtonClick"
       >
         Upload
@@ -18,14 +18,14 @@
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--download"
-        :disabled="!uploadedAmount || uploadedAmount !== compressedAmount"
+        :disabled="!isReadyToDownload"
         @click="downloadFiles"
       >
         Download
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--clear"
-        :disabled="!uploadedAmount || uploadedAmount !== compressedAmount"
+        :disabled="!isReadyToDownload"
         @click="clearFiles"
       >
         Clear memory
@@ -39,13 +39,14 @@
         type="number"
         max="100"
         min="0"
+        :disabled="isReadyToDownload || isCompressionLoading"
         class="compressor__rate"
       />
       %
     </div>
     <div>
-      <h1>{{ counterMessage }}</h1>
-      <h1>Status: {{ compressionStatus }}</h1>
+      <h2>{{ counterMessage }}</h2>
+      <h2>Status: {{ compressionStatus }}</h2>
     </div>
   </main>
 </template>
@@ -54,11 +55,11 @@
 import { ref, computed } from 'vue';
 import Compressor from 'compressorjs';
 
-const minifiedImages = ref([]);
 const uploadInput = ref();
+const compressionRate = ref(60);
 const uploadedAmount = ref(0);
 const compressedAmount = ref(0);
-const compressionRate = ref(60);
+const minifiedImages = ref([]);
 const isCompressionLoading = ref(false);
 
 const isReadyToDownload = computed(() => {
@@ -91,12 +92,11 @@ function onUploadButtonClick() {
 }
 
 function onInputChange() {
-  const images = Array.from(uploadInput.value.files);
-  uploadedAmount.value += images.length;
+  uploadedAmount.value = uploadInput.value.files.length;
   compressFiles();
 }
 
-async function compressFiles() {
+function compressFiles() {
   isCompressionLoading.value = true;
   const images = Array.from(uploadInput.value.files);
   images.forEach(file => {
@@ -105,14 +105,16 @@ async function compressFiles() {
       success(result) {
         const fileName = `min-${result.name}`;
         const file = new File([result], fileName);
+
         minifiedImages.value.push(file);
         compressedAmount.value++;
+
         if (compressedAmount.value === uploadedAmount.value) {
           isCompressionLoading.value = false;
         }
       },
       error(e) {
-        console.warn(e);
+        console.warn('Compressor Error:', e);
       },
     });
   });
