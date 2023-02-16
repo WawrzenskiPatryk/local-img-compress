@@ -65,8 +65,15 @@ export function useFileCompressor(uploadInput) {
 
   function downloadFiles() {
     if (isCompressionLoading.value || !uploadedAmount.value) return;
-    // todo
-    console.log(minifiedImages.value);
+    // todo: zipping files
+    minifiedImages.value.forEach(image => {
+      const elem = window.document.createElement('a');
+      elem.href = window.URL.createObjectURL(image);
+      elem.download = image.name;
+      document.body.appendChild(elem);
+      elem.click();
+      document.body.removeChild(elem);
+    });
   }
 
   function clearFiles() {
