@@ -134,7 +134,7 @@ function clearFiles() {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 60px;
+  gap: 50px;
   height: 100vh;
 
   &__buttons {
@@ -145,12 +145,12 @@ function clearFiles() {
   &__upload-button {
     font-size: 25px;
     padding: 15px;
-    height: 180px;
-    width: 180px;
+    height: 170px;
+    width: 170px;
     border-radius: 100%;
     cursor: pointer;
     font-weight: bold;
-    transition: 100ms ease;
+    transition: 200ms ease;
     border: 5px solid rgb(41, 98, 168);
     background-color: rgb(235, 241, 246);
 
@@ -187,7 +187,7 @@ function clearFiles() {
   }
 
   &__rate {
-    font-size: 35px;
+    font-size: 30px;
   }
 
   &__upload-input {
