@@ -1,7 +1,10 @@
 <template>
   <main class="compressor">
     <div class="compressor__buttons">
-      <button class="compressor__upload-button" @click="onUploadButtonClick">
+      <button
+        class="compressor__upload-button"
+        @click="onUploadButtonClick"
+      >
         Upload
         <input
           multiple
@@ -45,8 +48,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import Compressor from "compressorjs";
+import { ref, computed } from 'vue';
+import Compressor from 'compressorjs';
 
 const minifiedImages = ref([]);
 const uploadInput = ref();
@@ -64,19 +67,19 @@ const counterMessage = computed(() => {
   if (uploadedAmount.value > 0) {
     return `Compressed images: ${compressedAmount.value} / ${uploadedAmount.value}`;
   } else {
-    return "Upload images to compress!";
+    return 'Upload images to compress!';
   }
 });
 
 const compressionStatus = computed(() => {
   if (isCompressionLoading.value) {
-    return "compressing...";
+    return 'compressing...';
   } else if (isReadyToDownload.value) {
-    return "ready to download";
+    return 'ready to download';
   } else if (uploadedAmount.value === 0) {
-    return "waiting for upload";
+    return 'waiting for upload';
   } else {
-    return "ready to compress";
+    return 'ready to compress';
   }
 });
 
@@ -93,7 +96,7 @@ function onInputChange() {
 async function compressFiles() {
   isCompressionLoading.value = true;
   const images = Array.from(uploadInput.value.files);
-  images.forEach((file) => {
+  images.forEach(file => {
     new Compressor(file, {
       quality: compressionRate.value / 100,
       success(result) {
@@ -121,7 +124,7 @@ function clearFiles() {
   minifiedImages.value = [];
   uploadedAmount.value = 0;
   compressedAmount.value = 0;
-  console.log("CLEARED");
+  console.log('CLEARED');
 }
 </script>
 
