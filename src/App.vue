@@ -1,20 +1,20 @@
 <template>
   <main class="compressor">
+    <input
+      multiple
+      type="file"
+      accept="image/*"
+      ref="uploadInput"
+      class="compressor__upload-input"
+      @change="compressFiles"
+    />
     <div class="compressor__buttons">
       <button
         class="compressor__upload-button"
         :disabled="isReadyToDownload || isCompressionLoading"
-        @click="onUploadButtonClick"
+        @click="uploadInput.click()"
       >
         Upload
-        <input
-          multiple
-          type="file"
-          accept="image/*"
-          ref="uploadInput"
-          class="compressor__upload-input"
-          @change="onInputChange"
-        />
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--download"
@@ -53,7 +53,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useCompressor } from './composables/compressor';
+import { useFileCompressor } from './composables/compressor';
 
 const uploadInput = ref();
 const {
@@ -65,15 +65,9 @@ const {
   compressFiles,
   downloadFiles,
   clearFiles,
-} = useCompressor(uploadInput);
+} = useFileCompressor(uploadInput);
 
-function onUploadButtonClick() {
-  uploadInput.value.click();
-}
-
-function onInputChange() {
-  compressFiles();
-}
+compressionRate.value = 60;
 </script>
 
 <style lang="scss" scoped>

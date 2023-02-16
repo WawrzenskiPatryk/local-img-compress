@@ -1,13 +1,13 @@
 import { ref, computed } from 'vue';
 import Compressor from 'compressorjs';
 
-const appStatuses = {
-  compressing: 'compressing...',
-  ready: 'ready to download',
-  empty: 'waiting for upload',
-};
+export function useFileCompressor(uploadInput) {
+  const appStatuses = {
+    compressing: 'compressing...',
+    ready: 'ready to download',
+    empty: 'waiting for upload',
+  };
 
-export function useCompressor(uploadInput) {
   const compressionRate = ref(60);
   const uploadedAmount = ref(0);
   const compressedAmount = ref(0);
