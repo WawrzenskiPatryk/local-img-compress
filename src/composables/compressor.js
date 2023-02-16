@@ -89,6 +89,10 @@ export function useFileCompressor(fileInput) {
     fileInput.value.value = '';
   }
 
+  function setAppTitle(title) {
+    document.title = title || '100% Free Unlimited Local Image Compression';
+  }
+
   return {
     isCompressionLoading,
     isDownloadZipLoading,
@@ -99,5 +103,6 @@ export function useFileCompressor(fileInput) {
     compressFiles,
     downloadFiles,
     clearFiles,
+    setAppTitle,
   };
 }

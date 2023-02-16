@@ -74,7 +74,10 @@ const {
   compressFiles,
   downloadFiles,
   clearFiles,
+  setAppTitle,
 } = useFileCompressor(uploadInput);
+
+setAppTitle();
 </script>
 
 <style lang="scss" scoped>
