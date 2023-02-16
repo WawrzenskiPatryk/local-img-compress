@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import Compressor from 'compressorjs';
-import { downloadZip } from 'client-zip/index.js';
+import { downloadZip } from 'client-zip';
 import FileSaver from 'file-saver';
 
 Compressor.setDefaults({ quality: 0.6 });
