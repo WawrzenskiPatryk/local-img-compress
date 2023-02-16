@@ -1,11 +1,7 @@
 <template>
   <main class="compressor">
     <div class="compressor__buttons">
-      <button
-        v-show="uploadedAmount === 0"
-        class="compressor__upload-button"
-        @click="onUploadButtonClick"
-      >
+      <button class="compressor__upload-button" @click="onUploadButtonClick">
         Upload
         <input
           multiple
@@ -17,14 +13,6 @@
         />
       </button>
       <button
-        v-if="!isReadyToDownload && uploadedAmount !== 0"
-        class="compressor__upload-button compressor__upload-button--compress"
-        @click="compressFiles"
-      >
-        Compress
-      </button>
-      <button
-        v-else-if="isReadyToDownload"
         class="compressor__upload-button compressor__upload-button--download"
         @click="downloadFiles"
       >
@@ -50,8 +38,7 @@
       %
     </div>
     <div>
-      <h1>Uploaded files: {{ uploadedAmount }}</h1>
-      <h1>Compressed files: {{ compressedAmount }}</h1>
+      <h1>{{ counterMessage }}</h1>
       <h1>Status: {{ compressionStatus }}</h1>
     </div>
   </main>
@@ -65,12 +52,20 @@ const minifiedImages = ref([]);
 const uploadInput = ref();
 const uploadedAmount = ref(0);
 const compressedAmount = ref(0);
-const compressionRate = ref(100);
+const compressionRate = ref(60);
 const isCompressionLoading = ref(false);
 
 const isReadyToDownload = computed(() => {
   const difference = uploadedAmount.value - compressedAmount.value;
   return !difference && !!uploadedAmount.value;
+});
+
+const counterMessage = computed(() => {
+  if (uploadedAmount.value > 0) {
+    return `Compressed images: ${compressedAmount.value} / ${uploadedAmount.value}`;
+  } else {
+    return "Upload images to compress!";
+  }
 });
 
 const compressionStatus = computed(() => {
@@ -92,21 +87,21 @@ function onUploadButtonClick() {
 function onInputChange() {
   const images = Array.from(uploadInput.value.files);
   uploadedAmount.value += images.length;
+  compressFiles();
 }
 
 async function compressFiles() {
-  if (isCompressionLoading.value || isReadyToDownload.value) return;
   isCompressionLoading.value = true;
   const images = Array.from(uploadInput.value.files);
   images.forEach((file) => {
     new Compressor(file, {
       quality: compressionRate.value / 100,
       success(result) {
-        const file = new File([result], `min-${result.name}`);
+        const fileName = `min-${result.name}`;
+        const file = new File([result], fileName);
         minifiedImages.value.push(file);
         compressedAmount.value++;
         if (compressedAmount.value === uploadedAmount.value) {
-          images.value = null;
           isCompressionLoading.value = false;
         }
       },
@@ -118,6 +113,7 @@ async function compressFiles() {
 }
 
 function downloadFiles() {
+  if (isCompressionLoading.value || !uploadedAmount.value) return;
   console.log(minifiedImages.value);
 }
 
