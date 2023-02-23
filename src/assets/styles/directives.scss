@@ -6,7 +6,9 @@
 .v-loading {
   opacity: 0.6;
   pointer-events: none;
+  user-select: none;
   position: relative;
+  overflow: hidden;
 
   &::before {
     content: "";
@@ -31,7 +33,6 @@
   &::after {
     content: "";
     background-color: rgba(204, 204, 204, 0.7);
-    border-radius: inherit;
     height: 100%;
     left: 0;
     position: absolute;

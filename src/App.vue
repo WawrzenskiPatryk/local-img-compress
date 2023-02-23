@@ -10,7 +10,7 @@
     />
     <div class="compressor__buttons">
       <button
-        class="compressor__upload-button"
+        class="compressor__button"
         v-disabled="isReadyToDownload || isCompressionLoading"
         v-loading="isCompressionLoading"
         @click="uploadInput.click()"
@@ -18,7 +18,7 @@
         Upload
       </button>
       <button
-        class="compressor__upload-button compressor__upload-button--download"
+        class="compressor__button compressor__button--download"
         v-loading="isCompressionLoading"
         v-disabled="!isReadyToDownload || isDownloadZipLoading"
         @click="downloadFiles"
@@ -26,7 +26,7 @@
         Download
       </button>
       <button
-        class="compressor__upload-button compressor__upload-button--clear"
+        class="compressor__button compressor__button--clear"
         v-loading="isCompressionLoading"
         v-disabled="!isReadyToDownload || isDownloadZipLoading"
         @click="clearFiles"
@@ -100,7 +100,7 @@ setAppTitle();
     gap: 60px;
   }
 
-  &__upload-button {
+  &__button {
     font-size: 20px;
     padding: 12px;
     height: 150px;
