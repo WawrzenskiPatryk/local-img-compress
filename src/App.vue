@@ -11,21 +11,24 @@
     <div class="compressor__buttons">
       <button
         class="compressor__upload-button"
-        :disabled="isReadyToDownload || isCompressionLoading"
+        v-disabled="isReadyToDownload || isCompressionLoading"
+        v-loading="isCompressionLoading"
         @click="uploadInput.click()"
       >
         Upload
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--download"
-        :disabled="!isReadyToDownload || isDownloadZipLoading"
+        v-loading="isCompressionLoading"
+        v-disabled="!isReadyToDownload || isDownloadZipLoading"
         @click="downloadFiles"
       >
         Download
       </button>
       <button
         class="compressor__upload-button compressor__upload-button--clear"
-        :disabled="!isReadyToDownload || isDownloadZipLoading"
+        v-loading="isCompressionLoading"
+        v-disabled="!isReadyToDownload || isDownloadZipLoading"
         @click="clearFiles"
       >
         Clear memory
@@ -111,11 +114,6 @@ setAppTitle();
 
     &:hover:not([disabled]) {
       background-color: rgb(219, 231, 241);
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.4;
     }
 
     &--download {
